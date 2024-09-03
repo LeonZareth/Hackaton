@@ -3,20 +3,48 @@ from discord.ext import commands
 import random
 import os
 
-description = '''An example bot to showcase the discord.ext.commands extension module.'''
+description = '''A bot to educate users on how to prevent climate change.'''
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+bot = commands.Bot(command_prefix=':', description=description, intents=intents)
 
-# Directorio donde se encuentran las imágenes
 DIRECTORIO_IMAGENES = 'imagenes'
+
+# Preguntas y respuestas para el quiz
+QUIZ_QUESTIONS = [
+    {
+        "question": "¿Cuál es la principal causa del cambio climático?",
+        "options": ["A) Uso excesivo de plásticos", "B) Emisiones de gases de efecto invernadero", "C) Deforestación"],
+        "answer": "B"
+    },
+    {
+        "question": "¿Qué gas es el mayor contribuyente al efecto invernadero?",
+        "options": ["A) Dióxido de carbono (CO2)", "B) Metano (CH4)", "C) Vapor de agua (H2O)"],
+        "answer": "A"
+    },
+    {
+        "question": "¿Cuál de las siguientes es una fuente de energía renovable?",
+        "options": ["A) Carbón", "B) Energía solar", "C) Gas natural"],
+        "answer": "B"
+    },
+    {
+        "question": "¿Qué porcentaje del agua del mundo es potable?",
+        "options": ["A) 3%", "B) 10%", "C) 25%"],
+        "answer": "A"
+    },
+    {
+        "question": "Cuanto tarda el plastico en degradarce?",
+        "options": ["A) 100 a 1000","B) 500 a 5000","C)65 a 75"],
+        "answer": "A"
+    }
+]
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    print(f'wa desperte (ID: {bot.user.id})')
     print('------')
 
 @bot.command()
@@ -62,23 +90,43 @@ async def cool(ctx):
 async def _bot(ctx):
     """Is the bot cool?"""
     await ctx.send('Yes, the bot is cool.')
+
 @bot.command(name='como_evitar_el_cambio_climatico')
 async def random_image(ctx):
     """Sends a random image from the images directory."""
-    # Obtener la lista de archivos en el directorio de imágenes
     imagenes = os.listdir(DIRECTORIO_IMAGENES)
     
     if not imagenes:
         await ctx.send('No hay imágenes para enviar.')
         return
     
-    # Seleccionar una imagen al azar
     imagen = random.choice(imagenes)
     ruta_imagen = os.path.join(DIRECTORIO_IMAGENES, imagen)
     
-    # Enviar la imagen
-    await ctx.send("este es un modo de evitar el cambio climatico")
+    await ctx.send("Este es un modo de evitar el cambio climático:")
     await ctx.send(file=discord.File(ruta_imagen))
     print(f'Imagen enviada: {imagen}')
 
-bot.run('token')
+@bot.command(name='climate_quiz')
+async def climate_quiz(ctx):
+    """Starts a climate change quiz."""
+    question = random.choice(QUIZ_QUESTIONS)
+    
+    options = "\n".join(question["options"])
+    await ctx.send(f"{question['question']}\n\n{options}\n\nResponde con la letra correcta.")
+
+    def check(m):
+        return m.author == ctx.author and m.content.upper() in ["A", "B", "C"]
+
+    try:
+        msg = await bot.wait_for("message", check=check, timeout=30)
+    except asyncio.TimeoutError:
+        await ctx.send("¡Tiempo agotado! Por favor, inténtalo de nuevo.")
+        return
+    
+    if msg.content.upper() == question["answer"]:
+        await ctx.send("¡Correcto! 🎉")
+    else:
+        await ctx.send(f"Incorrecto. La respuesta correcta es: {question['answer']}.")
+
+bot.run('11111111111111111111111111111')
