@@ -106,7 +106,9 @@ async def random_image(ctx):
     await ctx.send("Este es un modo de evitar el cambio climático:")
     await ctx.send(file=discord.File(ruta_imagen))
     print(f'Imagen enviada: {imagen}')
-
+@bot.command(name='?')
+await ctx.send(":como_evitar_el_cambio_climaatico, sirve para enviar un txt y saber como evitar el cambio climatico")
+await ctx.send(":climate_quiz, para preguntas del cambio climatico, aprender del cambio climatico y divertirse")
 @bot.command(name='climate_quiz')
 async def climate_quiz(ctx):
     """Starts a climate change quiz."""
