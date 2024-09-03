@@ -129,4 +129,4 @@ async def climate_quiz(ctx):
     else:
         await ctx.send(f"Incorrecto. La respuesta correcta es: {question['answer']}.")
 
-bot.run('11111111111111111111111111111')
+bot.run('TOKEN')
